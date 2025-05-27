@@ -40,6 +40,23 @@ const Main = () => {
           })}
         </ul>
       </div>
+      {addedProducts.length > 0 && (
+        <>
+          <div className='container my-5'>
+            <h1 className='text-danger'>Prodotti aggiunti al carrello</h1>
+            <ul>
+              {addedProducts.map((p, i) => {
+                return (
+                  <li key={i}>
+                    <p>{p.quantity} x {p.name} ({p.price}€)</p>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
+        </>
+      )}
+
     </main>
   )
 }
