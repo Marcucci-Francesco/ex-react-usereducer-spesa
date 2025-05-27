@@ -11,12 +11,18 @@ const Main = () => {
   ];
 
   const [addedProducts, setAddedProducts] = useState([]);
-  console.log(addedProducts);
 
+  const updateProductQuantity = (name, quantity) => {
+    if (quantity < 1 || isNaN(quantity)) {
+      return;
+    }
+    setAddedProducts(curr => curr.map(p => p.name === name ? { ...p, quantity } : p));
+  }
 
   const addToCart = (product) => {
-    const isProductAlreadyAdded = addedProducts.some(p => p.name === product.name);
-    if (isProductAlreadyAdded) {
+    const addedProduct = addedProducts.find(p => p.name === product.name);
+    if (addedProduct) {
+      updateProductQuantity(addedProduct.name, addedProduct.quantity + 1);
       return;
     }
     setAddedProducts(curr => [...curr, {
@@ -24,6 +30,12 @@ const Main = () => {
       quantity: 1
     }])
   }
+
+  const remuveFromCart = (product) => {
+    setAddedProducts(curr => curr.filter(p => p.name !== product.name));
+  }
+
+  const totalPrice = addedProducts.reduce((acc, p) => acc + (p.price * p.quantity), 0);
 
   return (
     <main>
@@ -48,11 +60,16 @@ const Main = () => {
               {addedProducts.map((p, i) => {
                 return (
                   <li key={i}>
-                    <p>{p.quantity} x {p.name} ({p.price}€)</p>
+                    <p>
+                      <input type="number" value={p.quantity} onChange={e => updateProductQuantity(p.name, parseInt(e.target.value))} />
+                      <span>{p.name} ({p.price.toFixed(2)}€)</span>
+                    </p>
+                    <button className='btn btn-danger mb-4' onClick={() => remuveFromCart(p)}>Rimuovi dal carrello</button>
                   </li>
                 )
               })}
             </ul>
+            <h3>Totale da pagare: {totalPrice.toFixed(2)}€</h3>
           </div>
         </>
       )}
