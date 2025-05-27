@@ -1,4 +1,5 @@
 import React from 'react'
+import { useState } from 'react';
 
 const Main = () => {
 
@@ -9,9 +10,20 @@ const Main = () => {
     { name: 'Pasta', price: 0.7 },
   ];
 
+  const [addedProducts, setAddedProducts] = useState([]);
+  console.log(addedProducts);
 
 
-
+  const addToCart = (product) => {
+    const isProductAlreadyAdded = addedProducts.some(p => p.name === product.name);
+    if (isProductAlreadyAdded) {
+      return;
+    }
+    setAddedProducts(curr => [...curr, {
+      ...product,
+      quantity: 1
+    }])
+  }
 
   return (
     <main>
@@ -20,8 +32,9 @@ const Main = () => {
         <ul>
           {products.map((p, i) => {
             return (
-              <li key={i} className='my-2'>
-                {p.name}: {p.price.toFixed(2)}€
+              <li key={i} className='my-4'>
+                <p>{p.name}: {p.price.toFixed(2)}€</p>
+                <button className='btn btn-primary' onClick={() => addToCart(p)}>Aggiungi al carrello</button>
               </li>
             )
           })}
